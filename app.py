@@ -1,8 +1,12 @@
 
+import math
 from flask import Flask, render_template, request
+import forms
+from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
 app.secret_key = 'clave secreta'
+csrf=CSRFProtect()
 
 
 @app.route('/')
@@ -65,9 +69,41 @@ def operas():
     </form>
     '''
 
-@app.route("/OperasBas")
+@app.route("/OperasBas,")
+def OperasBas():
+    return render_template("operasBas.html")
+
+
+@app.route("/operasBas", methods=['GET', 'POST'])
 def operasbas():
-    return render_template('operasBas.html')
+        res = None
+        if request.method == 'POST':           
+          n1=request.form.get('num1')
+          n2=request.form.get('num2')
+
+          if request.form.get('operacion')=='sumar':
+              res=float(n1)+float(n2)
+          if request.form.get('operacion')=='restar':
+              res=float(n1)-float(n2)
+          if request.form.get('operacion')=='multiplicar':
+              res=float(n1)*float(n2)
+          if request.form.get('operacion')=='dividir':
+              res=float(n1)/float(n2)
+          
+        return render_template('operasBas.html', res=res,)
+
+
+@app.route('/distancia', methods=['GET', 'POST'])
+def distancia():
+        res=None
+        if request.method == 'POST':
+            x1=float(request.form.get('x1'))
+            y1=float(request.form.get('y1'))
+            x2=float(request.form.get('x2'))
+            y2=float(request.form.get('y2'))
+            res = math.sqrt((x2-x1)**2+(y2-y1)**2)
+        return render_template('distancia.html',res=res,)
+
 
 @app.route("/resultado", methods=['GET', 'POST'])
 def result1():
@@ -76,8 +112,23 @@ def result1():
     return f"<h1>La suma es: {float(n1)+float(n2)}</h1>"
     
 
+@app.route("/alumnos", methods=['GET', 'POST'])
+def alumnos():
+    mat=0
+    nom=""
+    ape=""
+    email=""
+    alumno_clas=forms.UserForm(request.form)
+    if request.method=='POST' and alumno_clas.validate():
+        mat = alumno_clas.matricula.data
+        nom = alumno_clas.nombre.data
+        ape = alumno_clas.apellido.data
+        email = alumno_clas.correo.data
+    #De esta forma le pasamos los datos a nuestro formulario
+    return render_template("alumnos.html",form=alumno_clas,mat=mat,nom=nom,ape=ape,email=email)
 
 if __name__ == '__main__':
+    csrf.init_app(app)
     app.run(debug=True)
 
 

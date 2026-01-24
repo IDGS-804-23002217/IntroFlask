@@ -1,0 +1,20 @@
+
+{% extends "layout.html" %}
+{% block content %}
+
+{%import "_macrosDistancia.html" as macros %}<!-- Importar macros-->
+
+<form method="post" action="/distancia">
+    {{ macros.datos('x1', 'Escribe el valor de x1:')}}
+    {{ macros.datos('y1', 'Escribe el valor de y1:')}}  
+    {{ macros.datos('x2', 'Escribe el valor de x2:')}}
+    {{ macros.datos('y2', 'Escribe el valor de y2:')}}
+
+    <button type="submit" class="btn btn-primary">Calcular Distancia</button>
+</form>
+
+<h1>El resultado es {{res}}</h1>
+
+
+{% endblock %}
+
