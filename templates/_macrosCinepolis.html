@@ -1,0 +1,15 @@
+{% macro camposNuevos(field) %}
+<div class="mb-2 campo-form">
+    <label class="form-label fw-bold">{{ field.label }}</label>
+
+    {{ field(class="form-control") | safe }}
+
+    <div class="error-container">
+        {% if field.errors %}
+            {% for error in field.errors %}
+                <div class="error-text">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endmacro %}
